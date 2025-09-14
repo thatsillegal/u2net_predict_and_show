@@ -1,0 +1,5 @@
+/saved_models/u2net/*
+/static/*
+/uploads/*
+.idea/
+__pycache__/
