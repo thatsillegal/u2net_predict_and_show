@@ -8,10 +8,10 @@ from model import U2NET
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from data_loader import NormalizeSeparate, MyDataset
+import glob
 
 _model = None
 
-# normalize the predicted SOD probability map
 def normPRED(d):
     ma = torch.max(d)
     mi = torch.min(d)
@@ -20,7 +20,6 @@ def normPRED(d):
 def save_output(image_name,pred,d_dir):
     predict = pred.squeeze()
     predict_np = predict.cpu().data.numpy()
-
     im = Image.fromarray(predict_np*255).convert('RGB')
     image = io.imread(image_name)
     imo = im.resize((image.shape[1],image.shape[0]),resample=Image.BILINEAR)
@@ -32,23 +31,28 @@ def save_output(image_name,pred,d_dir):
 
 def load_model (model_name='u2net'):
     global _model
-
     if _model is not None:
         return _model
 
-    model_dir = os.path.join(os.getcwd(), 'saved_models', model_name, model_name + '.pth')
+    model_dir = os.path.join(os.getcwd(), 'saved_models')
+    pth_files = glob.glob(os.path.join(model_dir,"*.pth"))
+    if len(pth_files) == 0:
+        raise FileNotFoundError(f"No .pth file found in {model_dir}")
+    elif len(pth_files) > 1:
+        raise RuntimeError(f"More than one .pth file found in {model_dir}: {pth_files}")
+    pth_file = pth_files[0]
     print("...load U2NET...")
     net = U2NET(3, 1)
-
-    net.load_state_dict(torch.load(model_dir))
     if torch.cuda.is_available():
         net.cuda()
-
+        net.load_state_dict(torch.load(pth_file))
+    else:
+        net.load_state_dict(torch.load(pth_file, map_location=torch.device('cpu')))
     net.eval()
     _model = net
     return _model
 
-def predict_mask(image_path:str, output_dir: str = './static') -> str:
+def predict_mask(image_path:str, output_dir: str = './output/mask_predictions') -> str:
     """
     输入：image_path（图片路径）
     输出：保存的 mask 图片路径

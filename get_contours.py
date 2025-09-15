@@ -30,9 +30,9 @@ def extract_and_save_contours(img_file, output_dir):
 def process_all_images(target_name:str, image_dir:str = None, output_dir:str = None, ):
 
     if image_dir is None:
-        image_dir = os.path.join(os.getcwd(), 'static')
+        image_dir = os.path.join(os.getcwd(), 'output','mask_predictions')
     if output_dir is None:
-        output_dir = os.path.join(os.getcwd(),'static','contours_output')
+        output_dir = os.path.join(os.getcwd(),'output','final_output')
 
     os.makedirs(image_dir, exist_ok=True)
     os.makedirs(output_dir, exist_ok=True)

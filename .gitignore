@@ -1,5 +1,7 @@
-/saved_models/u2net/*
-/static/*
+# 忽略 saved_models 里面的所有内容
+/saved_models/*
+# 但保留目录本身
+!/saved_models/.gitkeep
 /uploads/*
 .idea/
 __pycache__/
