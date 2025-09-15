@@ -22,7 +22,10 @@ conda env create -f environment.yml
 ```bash
 conda activate u2net_py37
 ```
-### 3. 运行项目
+### 3. 传入模型文件
+把模型的参数文件(.pth)放入 saved_models 目录中
+
+### 4. 运行项目
 ```bash
 python app.py
 ```
